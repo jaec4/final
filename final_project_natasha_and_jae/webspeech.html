@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<!--<meta charset="ISO-8859-9">-->
+
+<head>
+    <title>Accessible Air Quality</title>
+    <link href="https://fonts.googleapis.com/css?family=Quicksand:300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="assets/visual.css">
+    <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+    <script type="text/javascript">
+        let final_span = document.getElementById("final_span");
+        final_span.addEventListener("keyup", function(event) {
+            if (event.enter) {
+                event.preventDefault();
+            }
+        });
+
+        function data_appear() {
+            $(".voice_rec")[6].play();
+            $("#loc_header").fadeIn();
+            $("#error_msg").hide();
+            $("#nest").fadeIn();
+            $("#aqi_data").fadeIn();
+            if ({{AQI}} < 51) {
+                $("#good_img").fadeIn();
+                $(".voice_rec")[0].play();
+                $(".voice_rec")[6].muted = true;
+            } else if ({{AQI}} < 101) {
+                $("#moderate_img").fadeIn();
+                $(".voice_rec")[1].play();
+                $(".voice_rec")[6].muted = true;
+            } else if ({{AQI}} < 151) {
+                $("#mild_unhealthy_img").fadeIn();
+                $(".voice_rec")[2].play();
+                $(".voice_rec")[6].muted = true;
+            } else if ({{AQI}} < 201) {
+                $("#unhealthy_img").fadeIn();
+                $(".voice_rec")[3].play();
+                $(".voice_rec")[6].muted = true;
+            } else if ({{AQI}} < 301) {
+                $("#very_unhealthy_img").fadeIn();
+                $(".voice_rec")[4].play();
+                $(".voice_rec")[6].muted = true;
+            } else if ({{AQI}} < 501) {
+                $("#hazardous_img").fadeIn();
+                $(".voice_rec")[5].play();
+                $(".voice_rec")[6].muted = true;
+            }
+        }
+    </script>
+</head>
+
+<body onload="data_appear()">
+    <h1 class="center" id="headline"> Be aware of the air you are breathing.</h1>
+    <div id="info">
+        <p id="info_start">Press <span id="shortcut">&nbsp;shift + spacebar&nbsp;</span> and say the name of a location, or type one in.<br>Press<span id="shortcut">&nbsp;enter&nbsp;</span>when you are done.</p>
+        <p id="info_speak_now">Speak now.</p>
+        <p id="info_no_speech">No speech was detected. You may need to adjust your
+            <a href="//support.google.com/chrome/bin/answer.py?hl=en&amp;answer=1407892">
+                microphone settings</a>.</p>
+        <p id="info_no_microphone" style="display:none">
+            No microphone was found. Ensure that a microphone is installed and that
+            <a href="//support.google.com/chrome/bin/answer.py?hl=en&amp;answer=1407892">
+                microphone settings</a> are configured correctly.</p>
+        <p id="info_allow">Click the "Allow" button above to enable your microphone.</p>
+        <p id="info_denied">Permission to use microphone was denied.</p>
+        <p id="info_blocked">Permission to use microphone is blocked. To change,
+            go to chrome://settings/contentExceptions#media-stream</p>
+        <p id="info_upgrade">Web Speech API is not supported by this browser.
+            Upgrade to <a href="//www.google.com/chrome">Chrome</a>
+            version 25 or later.</p>
+    </div>
+
+    <p id="loc_header">The air quality in <span id="strong">{{location_name}}</span> is <span id="strong">{{quality}}</span> (AQI: {{AQI}}).</p>
+    <p id="error_msg">{{location_name}}</p>
+
+    <div id="wrapper">
+        <div id="main-form">
+            <form>
+                <input type="text" x-webkit-speech name="location_input" id="final_span" class="final" autofocus placeholder="Provide the name of a city or street address.">
+            </form>
+
+            <!-- INITIATOR -->
+            <div class="right">
+
+                <button id="start_button" onclick="startButton()">
+                    <img id="start_img" src="assets/mic.gif" alt="mic"></button>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="center">
+        <div id="div_language">
+            <select id="select_language" onchange="updateCountry()"></select>
+            &nbsp;&nbsp;
+            <select id="select_dialect"></select>
+        </div>
+    </div>
+
+    <div id="nest">
+        <div id="dashboard"></div>
+        <div class="panelButton" id="airdata">Air Data</div>
+        <div style="bottom:57.5px;" class="panelButton" id="suggestion">Suggestion</div>
+
+        <div class="sug">
+            <p>{{suggestion}}</p>
+        </div>
+
+        <div class="opacity">
+            <table id="aqi_data">
+                <thead>
+                    <tr>
+                        <th style="font-weight: 600;">AQI</th>
+                        <th style="font-weight: 600;">:&nbsp; {{AQI}}</th>
+                    </tr>
+                </thead>
+                <tr>
+                    <td>CO</td>
+                    <td>:&nbsp; {{CO}}</td>
+                </tr>
+                <tr>
+                    <td>NO2</td>
+                    <td>:&nbsp; {{NO2}}</td>
+                </tr>
+                <tr>
+                    <td>O3</td>
+                    <td>:&nbsp; {{03}}</td>
+                </tr>
+                <tr>
+                    <td>SO2</td>
+                    <td>:&nbsp; {{SO2}}</td>
+                </tr>
+                <tr>
+                    <td>PM10</td>
+                    <td>:&nbsp; {{PM10}}</td>
+                </tr>
+                <tr>
+                    <td>PM2.5</td>
+                    <td>:&nbsp; {{PM25}}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+
+<!--
+    <p id="aqi_data"> AQI : {{AQI}} <br />
+        Air Quality Conditions are : {{quality}}</p>
+-->
+
+    <img class="gif" id="good_img" src="assets/good.gif" alt="avatar">
+    <img class="gif" id="moderate_img" src="assets/moderate.gif" alt="avatar">
+    <img class="gif" id="mild_unhealthy_img" src="assets/mild_unhealthy.gif" alt="avatar">
+    <img class="gif" id="unhealthy_img" src="assets/unhealthy.gif" alt="avatar">
+    <img class="gif" id="very_unhealthy_img" src="assets/very_unhealthy.gif" alt="avatar">
+    <img class="gif" id="hazardous_img" src="assets/hazardous.gif" alt="avatar">
+
+    <img class="png" id="scale" src="assets/scale.png" alt="scale">
+
+
+    <audio class="voice_rec" id="good_audio" src="assets/audio/good.m4a">
+    <audio class="voice_rec" id="moderate_audio" src="assets/audio/moderate.m4a">
+    <audio class="voice_rec" id="sensitive_audio" src="assets/audio/sensitive.m4a">
+    <audio class="voice_rec" id="unhealthy_audio" src="assets/audio/unhealthy.m4a">
+    <audio class="voice_rec" id="very_unhealthy_audio" src="assets/audio/veryunhealthy.m4a">
+    <audio class="voice_rec" id="hazardous_audio" src="assets/audio/hazardous.m4a">
+    <audio autoplay class="voice_rec" id="introduction" src="assets/audio/introduction2.m4a">
+
+</body>
+
+
+
+<script type="text/javascript">
+    function startButton() {
+        getfocus();
+
+        var i;
+        for (i = 0; i < 7; i++) {
+            $('.voice_rec')[i].muted = true;
+        }
+
+        if (recognizing) {
+            recognition.stop();
+            return;
+        }
+        recognition.lang = select_dialect.value;
+        recognition.start();
+        ignore_onend = false;
+        final_span.innerHTML = '';
+        interim_span.innerHTML = '';
+        start_img.src = 'mic-slash.gif';
+        showInfo('info_allow');
+        showButtons('none');
+        start_timestamp = event.timeStamp;
+    }
+
+    function getfocus() {
+        document.getElementById("final_span").focus();
+    }
+
+    //Shift + spacebar turn on speech recognition feature.
+    $(document).keypress(function(e) {
+        var i;
+        for (i = 0; i < 7; i++) {
+            $('.voice_rec')[i].muted = true;
+        }
+        if (e.which == 32 && e.shiftKey) {
+            // if(event.altKey) {
+            $("input").focus()
+            if (recognizing) {
+                recognition.stop();
+                return;
+            }
+            final_transcript = '';
+            recognition.lang = select_dialect.value;
+            recognition.start();
+            ignore_onend = false;
+            final_span.innerHTML = '';
+            interim_span.innerHTML = '';
+            start_img.src = 'assets/mic-slash.gif';
+            showInfo('info_allow');
+            showButtons('none');
+            start_timestamp = event.timeStamp;
+        }
+    });
+
+    var langs = [
+        ['Afrikaans', ['af-ZA']],
+        ['Bahasa Indonesia', ['id-ID']],
+        ['Bahasa Melayu', ['ms-MY']],
+        ['Català', ['ca-ES']],
+        ['Čeština', ['cs-CZ']],
+        ['Deutsch', ['de-DE']],
+        ['English', ['en-AU', 'Australia'],
+            ['en-CA', 'Canada'],
+            ['en-IN', 'India'],
+            ['en-NZ', 'New Zealand'],
+            ['en-ZA', 'South Africa'],
+            ['en-GB', 'United Kingdom'],
+            ['en-US', 'United States']
+        ],
+        ['Español', ['es-AR', 'Argentina'],
+            ['es-BO', 'Bolivia'],
+            ['es-CL', 'Chile'],
+            ['es-CO', 'Colombia'],
+            ['es-CR', 'Costa Rica'],
+            ['es-EC', 'Ecuador'],
+            ['es-SV', 'El Salvador'],
+            ['es-ES', 'España'],
+            ['es-US', 'Estados Unidos'],
+            ['es-GT', 'Guatemala'],
+            ['es-HN', 'Honduras'],
+            ['es-MX', 'México'],
+            ['es-NI', 'Nicaragua'],
+            ['es-PA', 'Panamá'],
+            ['es-PY', 'Paraguay'],
+            ['es-PE', 'Perú'],
+            ['es-PR', 'Puerto Rico'],
+            ['es-DO', 'República Dominicana'],
+            ['es-UY', 'Uruguay'],
+            ['es-VE', 'Venezuela']
+        ],
+        ['Euskara', ['eu-ES']],
+        ['Français', ['fr-FR']],
+        ['Galego', ['gl-ES']],
+        ['Hrvatski', ['hr_HR']],
+        ['IsiZulu', ['zu-ZA']],
+        ['Íslenska', ['is-IS']],
+        ['Italiano', ['it-IT', 'Italia'],
+            ['it-CH', 'Svizzera']
+        ],
+        ['Magyar', ['hu-HU']],
+        ['Nederlands', ['nl-NL']],
+        ['Norsk bokmål', ['nb-NO']],
+        ['Polski', ['pl-PL']],
+        ['Português', ['pt-BR', 'Brasil'],
+            ['pt-PT', 'Portugal']
+        ],
+        ['Română', ['ro-RO']],
+        ['Slovenčina', ['sk-SK']],
+        ['Suomi', ['fi-FI']],
+        ['Svenska', ['sv-SE']],
+        ['Türkçe', ['tr-TR']],
+        ['български', ['bg-BG']],
+        ['Pусский', ['ru-RU']],
+        ['Српски', ['sr-RS']],
+        ['한국어', ['ko-KR']],
+        ['中文', ['cmn-Hans-CN', '普通话 (中国大陆)'],
+            ['cmn-Hans-HK', '普通话 (香港)'],
+            ['cmn-Hant-TW', '中文 (台灣)'],
+            ['yue-Hant-HK', '粵語 (香港)']
+        ],
+        ['日本語', ['ja-JP']],
+        ['Lingua latīna', ['la']]
+    ];
+    for (var i = 0; i < langs.length; i++) {
+        select_language.options[i] = new Option(langs[i][0], i);
+    }
+    select_language.selectedIndex = 6;
+    updateCountry();
+    select_dialect.selectedIndex = 6;
+    showInfo('info_start');
+
+    function updateCountry() {
+        for (var i = select_dialect.options.length - 1; i >= 0; i--) {
+            select_dialect.remove(i);
+        }
+        var list = langs[select_language.selectedIndex];
+        for (var i = 1; i < list.length; i++) {
+            select_dialect.options.add(new Option(list[i][1], list[i][0]));
+        }
+        select_dialect.style.visibility = list[1].length == 1 ? 'hidden' : 'visible';
+    }
+
+    var final_transcript = '';
+    var recognizing = false;
+    var ignore_onend;
+    var start_timestamp;
+    if (!('webkitSpeechRecognition' in window)) {
+        upgrade();
+    } else {
+        start_button.style.display = 'inline-block';
+        var recognition = new webkitSpeechRecognition();
+        recognition.continuous = false;
+        recognition.interimResults = true;
+        recognition.onstart = function() {
+            recognizing = true;
+            showInfo('info_speak_now');
+            start_img.src = 'assets/mic-animate.gif';
+        };
+        recognition.onerror = function(event) {
+            if (event.error == 'no-speech') {
+                start_img.src = 'assets/mic.gif';
+                showInfo('info_no_speech');
+                ignore_onend = true;
+            }
+            if (event.error == 'audio-capture') {
+                start_img.src = 'assets/mic.gif';
+                showInfo('info_no_microphone');
+                ignore_onend = true;
+            }
+            if (event.error == 'not-allowed') {
+                if (event.timeStamp - start_timestamp < 100) {
+                    showInfo('info_blocked');
+                } else {
+                    showInfo('info_denied');
+                }
+                ignore_onend = true;
+            }
+        };
+        recognition.onend = function() {
+            recognizing = false;
+            if (ignore_onend) {
+                return;
+            }
+            start_img.src = 'assets/mic.gif';
+            if (!final_transcript) {
+                showInfo('info_start');
+                return;
+            }
+            showInfo('');
+            if (window.getSelection) {
+                window.getSelection().removeAllRanges();
+                var range = document.createRange();
+                range.selectNode(document.getElementById('final_span'));
+                window.getSelection().addRange(range);
+            }
+        };
+        recognition.onresult = function(event) {
+            var interim_transcript = '';
+            for (var i = event.resultIndex; i < event.results.length; ++i) {
+                if (event.results[i].isFinal) {
+                    //Place voice data on input form.
+                    document.getElementById('final_span').value = final_transcript += event.results[i][0].transcript;
+                } else {
+                    document.getElementById('final_span').value = interim_transcript += event.results[i][0].transcript;
+                }
+            }
+            final_transcript = capitalize(final_transcript);
+            final_span.innerHTML = linebreak(final_transcript);
+            interim_span.innerHTML = linebreak(interim_transcript);
+            if (final_transcript || interim_transcript) {
+                showButtons('inline-block');
+            }
+        };
+    }
+
+    function upgrade() {
+        start_button.style.visibility = 'hidden';
+        showInfo('info_upgrade');
+    }
+    var two_line = /\n\n/g;
+    var one_line = /\n/g;
+
+    function linebreak(s) {
+        return s.replace(two_line, '<p></p>').replace(one_line, '<br>');
+    }
+    var first_char = /\S/;
+
+    function capitalize(s) {
+        return s.replace(first_char, function(m) {
+            return m.toUpperCase();
+        });
+    }
+
+    function showInfo(s) {
+        if (s) {
+            for (var child = info.firstChild; child; child = child.nextSibling) {
+                if (child.style) {
+                    child.style.display = child.id == s ? 'inline' : 'none';
+                }
+            }
+            info.style.visibility = 'visible';
+        } else {
+            info.style.visibility = 'hidden';
+        }
+    }
+    var current_style;
+    
+    
+
+
+    $("#airdata").click(function() {
+        $(this).toggleClass('red');
+        $('.opacity').toggle();
+        $('#scale').toggle();
+    });
+
+    $("#suggestion").click(function() {
+        $(this).toggleClass('red');
+        $('.sug').toggle();
+    });
+
+</script>
